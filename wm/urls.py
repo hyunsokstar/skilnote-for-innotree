@@ -90,6 +90,7 @@ urlpatterns = [
     # 유저 리스트 출력 for memo
     # path('userlist/byajax', views.user_list_for_memo, name = 'user_list_for_memo'),
     path('userlist/byajax', views.user_list_for_memo_view.as_view(), name = 'user_list_for_memo'),
+    path('userlist/loginpage', views.user_list_for_login_page.as_view(), name = 'user_list_for_login_page'),
     path('favorite_user_list/byajax', views.favorite_user_list_for_skillnote, name = 'favorite_ user_list_for_memo'),
     path('myshortcut/delete/ajax/', views.delete_myshortcut_by_ajax, name = 'delete_myshortcut_by_ajax'),
     path('myshortcut/update/category/ajax', views.update_category_by_ajax, name = 'update_category_by_ajax'),

@@ -1436,6 +1436,33 @@ class user_list_for_memo_view(ListView):
             print("result : ", object_list)
             return object_list
 
+class user_list_for_login_page(ListView):
+    paginate_by = 10
+    # if 'q' in request.GET:
+    #     query = request.GET.get('q')
+    #     print("query : ", query)
+
+    def get_template_names(self):
+        if self.request.is_ajax():
+            print("user list ajax 요청 확인")
+            return ['wm/_user_list_for_login_page.html']
+        return ['wm/user_list_for_loginpage.html']
+
+    def get_queryset(self):
+        print("실행 확인 겟 쿼리셋")
+        query = self.request.GET.get('q')
+        print("query : ", query)
+
+        if query != None:
+            object_list = User.objects.all().filter(Q(username__contains=query)).order_by('-profile__skill_note_reputation');
+            return object_list
+        else:
+            print("user list 출력 확인 ===========================================================")
+            object_list = User.objects.all().filter(profile__public="yes").order_by('-profile__skill_note_reputation');
+            print("result : ", object_list)
+            return object_list
+
+
 
 def update_shortcut_nick(request):
     if request.method == "POST" and request.is_ajax():
