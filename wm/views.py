@@ -1437,7 +1437,7 @@ class user_list_for_memo_view(ListView):
             return object_list
 
 class user_list_for_login_page(ListView):
-    paginate_by = 10
+    paginate_by = 50
     # if 'q' in request.GET:
     #     query = request.GET.get('q')
     #     print("query : ", query)
