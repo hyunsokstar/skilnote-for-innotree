@@ -12,14 +12,35 @@
     
 <div class="user-list-container">
     
-    <br>
-    
     <div>
         {% if object_list.exists %}
         <div class="">
-            <div>back</div>
+        <div>back</div>
         {% for u in object_list %}
-            {% if u.profile.subject == "backend" %}
+            {% if u.profile.subject == "back" %}
+                <div style="width:10%;">
+                    <a href="http://skilnote-for-innotree.co.kr/skilnote1/myshortcut/{{u.username}}/1">
+                        {{u.username}}
+                    </a>
+                </div>
+            {% endif %}
+        {% endfor %}
+        </div>
+        {% else %}
+        <tr>
+            <td colspan="4">
+                <h4>아직 게시물이 없습니다.</h4>
+            </td>
+        </tr>
+        {% endif %}        
+    </div>
+
+    <div>
+        {% if object_list.exists %}
+        <div class="">
+        <div>front</div>
+        {% for u in object_list %}
+            {% if u.profile.subject == "front" %}
             <div style="width:10%;">
                 <a href="http://skilnote-for-innotree.co.kr/skilnote1/myshortcut/{{u.username}}/1">
                     {{u.username}}
@@ -27,41 +48,14 @@
             </div>
             {% endif %}
         {% endfor %}
-    </div>
-    {% else %}
+        </div>
+        {% else %}
         <tr>
             <td colspan="4">
                 <h4>아직 게시물이 없습니다.</h4>
             </td>
         </tr>
-    {% endif %}        
-    </div>
-    <div>
-        <div>frontend</div>
-
-        <div>
-            {% if object_list.exists %}
-            <div class="">
-                <div>back</div>
-            {% for u in object_list %}
-                {% if u.profile.subject == "frontend" %}
-                <div style="width:10%;">
-                    <a href="http://skilnote-for-innotree.co.kr/skilnote1/myshortcut/{{u.username}}/1">
-                        {{u.username}}
-                    </a>
-                </div>
-                {% endif %}
-            {% endfor %}
-        </div>
-        {% else %}
-            <tr>
-                <td colspan="4">
-                    <h4>아직 게시물이 없습니다.</h4>
-                </td>
-            </tr>
         {% endif %}        
-        </div>
-
     </div>
     <div>
         <div>app</div>
@@ -83,27 +77,6 @@
     </div>
 </div>
 
-
-    <!-- {% if object_list.exists %}
-    <div class="user_list">
-    {% for u in object_list %}
-            <div style="width:10%;">
-                <a href="http://skilnote-for-innotree.co.kr/skilnote1/myshortcut/{{u.username}}/1">
-                    {{u.username}}
-                </a>
-            </div>
-            {% if u.username == request.user.username %}
-            {% else %}
-            {% endif %}
-            {% endfor %}
-        </div>
-{% else %}
-    <tr>
-        <td colspan="4">
-            <h4>아직 게시물이 없습니다.</h4>
-        </td>
-    </tr>
-{% endif %} -->
     
 <script type="text/javascript">
 {% block extra_js %}
