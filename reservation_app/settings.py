@@ -156,7 +156,7 @@ MEDIA_URL = '/media/'
 
 CRISPY_TEMPLATE_PACK = 'bootstrap4'
 
-LOGIN_REDIRECT_URL = '/skilnote1/myshortcut/'
+LOGIN_REDIRECT_URL = '/wm/myshortcut/'
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 DJANGO_NOTIFICATIONS_CONFIG = {
@@ -172,6 +172,8 @@ INTERNAL_IPS = [
     '127.0.0.1',
     # ...
 ]
+
+LOGIN_REDIRECT_URL = '/wm/main_page'
 
 X_FRAME_OPTIONS = 'ALLOWALL'
 XS_SHARING_ALLOWED_METHODS = ['POST','GET','OPTIONS', 'PUT', 'DELETE']

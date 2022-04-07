@@ -21,7 +21,7 @@ urlpatterns = [
     path('board/', include('board.urls')),
     path('pd/', include('pd.urls')),
     path('skilblog/', include('skilblog.urls')),
-    path('skilnote1/', include('wm.urls')),
+    path('wm/', include('wm.urls')),
     path('skilnote2/', include('skilnote2.urls')),
     path('skilnote3/', include('skilnote3.urls')),
     path('skilnote4/', include('skilnote4.urls')),

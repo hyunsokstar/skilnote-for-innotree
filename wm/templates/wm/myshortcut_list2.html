@@ -17,7 +17,7 @@ button, input, a {
 .sideicon_for_scroll{
 	position:fixed;
 	colort:blue;
-	top:60px;
+	top:80px;
 	right:0px;
 }
 
@@ -50,6 +50,28 @@ button, input, a {
 	background-color:green
 }
 
+
+.header-box-for-input-mode {
+	width: 100%;;
+	<!-- height: 100px; -->
+	overflow:expand;
+	background-color: whitesmoke;
+	border: 1px solid blue;
+	margin-bottom:10px;
+	display:flex;
+}
+
+.header-box-for-input-mode .header-box-column {
+	flex:1;
+	padding-left: 4px;
+	<!-- border: 1px solid green; -->
+}
+
+.header-box-for-input-mode input[type=text] {
+	background-color: yellow;
+	width: 38px;
+}
+
 img.Image { max-width: 100%; display: block; }
 
 
@@ -60,8 +82,12 @@ img.Image { max-width: 100%; display: block; }
 
 <br><br><br>
 
-<h2>{{request.user}}의 Skil Note (입력 모드) &nbsp;&nbsp; CA: {{request.user.profile.selected_category_id}}</h2>
+<h4>{{request.user}}의 Skil Note (입력 모드) &nbsp;&nbsp; CA: {{request.user.profile.selected_category_id}}</h4>
 
+<!-- 편집 컴퍼넌트 -->
+{% include "./edit_component.html" %}
+
+<!-- wm input mode -->
 {% if messages %}
 <div class="alert alert-success">
 	{% for message in messages %}
@@ -123,7 +149,6 @@ img.Image { max-width: 100%; display: block; }
 				<button class="btn btn-outline-danger btn-sm shortcut_between_button_input" id="{{p.id}}">ip</button>
 				<button class="btn btn-outline-danger btn-sm shortcut_between_button_textarea" id="{{p.id}}">ta</button>
 				<button class="btn btn-outline-danger btn-sm input_beteween_image_for_skill_note_btn" id="{{p.id}}">pi</button>
-
 
 		</td>
 	</tr>
@@ -341,7 +366,9 @@ img.Image { max-width: 100%; display: block; }
 
 <hr>
 
-<form method="post" action="/skilnote1/myshortcut/createSkilNoteForInsertMode/" id="" class="hi m-2">
+
+<!-- 220111 인서트 모드 입력창 -->
+<form method="post" action="/wm/myshortcut/createSkilNoteForInsertMode/" id="" class="hi m-2">
 	{% csrf_token %}
 	<div class="form-group">
 		{{ MyShortCutForm_summer_note2 | safe }}
@@ -353,7 +380,7 @@ img.Image { max-width: 100%; display: block; }
 
 <div class="sideicon_for_scroll">
 
-	<button type="button" name="button" class="before_btn btn btn-outline-dark btn-sm" onclick="window.location.href = '{% url 'wm:my_shortcut_list' %}'">L</button><br>
+	<button type="button" name="button" class="read-mode btn btn-outline-dark btn-sm" onclick="window.location.href = '{% url 'wm:my_shortcut_list' %}'">L</button><br>
 	<a href="" class="btn btn-outline-primary btn-sm" id="insert_first_for_skill_note_btn"> 첫글</a><br>
 	<a href="" class="btn btn-outline-primary btn-sm" id="shortcut_delete_button "> 삭제 </a> <br>
 	<a href="" class="btn btn-outline-primary btn-sm" id="ca_plus_1_btn" data-category={{cateogory}}>
@@ -795,9 +822,7 @@ $(function() {
     if (e.ctrlKey && e.which === 39) {
 	  $(".go_to_next_channer_btn").trigger("click");
     }
-	if (e.altKey && e.which === 49) {
-	  $(".new3_btn").trigger("click");
-    }
+
 	if (e.altKey && e.which === 50) {
 	  $(".new1_btn").trigger("click");
 	}
@@ -807,11 +832,168 @@ $(function() {
 	if (e.altKey && e.which === 52) {
 	  $(".insert_image").trigger("click");
 	}
+
+	if (e.altKey && e.which === 49) {
+		console.log("리드 모드");
+	  $(".read-mode").trigger("click");
+    }
+
+	if (e.ctrlKey && e.which === 38) {
+	  $(".before_btn").trigger("click");
+	}
+	if (e.ctrlKey && e.which === 40) {
+	  $(".next_btn").trigger("click");
+	}
+
   })
 
   window.scrollTo(0,document.body.scrollHeight);
 
 });
+
+// 1111111111111111
+
+// partial_move_btn_for_user
+// form.addEventListener('focusout', (event) => {
+// 	alert("검사 실행")
+// });
+
+
+$('body').on('click', '.partial_copy_from_another_user', function (e) {
+	e.preventDefault();
+	
+	var partial_copy_option = $("input[name='partial_copy_option']:checked").val();
+	alert("partial_copy_option : "+ partial_copy_option)
+
+    const writer_start = $(this).parent().find(".writer_start").val();
+    const writer_end = $(this).parent().find(".writer_end").val();
+    const user_start = $(this).parent().find(".user_start").val();
+    const user_end = $(this).parent().find(".user_end").val();
+    const writer_name  = $(this).parent().find(".writer_id_input_for_copy").val();
+    let writer_rang = writer_end - writer_start
+    let user_rang = user_end - user_start
+
+    console.log("rang : ", writer_start, writer_end, user_start, user_end);
+    console.log("writer_rang : ", writer_rang);
+    console.log("user_rang : ", user_rang);
+    console.log("writer_name : ", writer_name);
+
+    if(writer_rang === user_rang){
+      console.log("부분 복사를 실행 하겠습니다");
+    } else {
+      alert("범위가 다르므로 복사를 취소 하겠습니다.");
+      return;
+    }
+
+    const yn = confirm(`부분 복사 (ca${writer_start} ~ ca${writer_end} => ca${user_start} ~ ca${user_end})  실행합니까? `, "");
+
+    if (yn) {
+            $.ajax({
+                type: "POST",
+                url: '/wm/myshortcut/partial_copy_for_skilnote_from_another_user',
+                data: {
+                  writer_start: writer_start,
+                  writer_end: writer_end,
+                  user_start: user_start,
+                  user_end:user_end,
+                  writer_name:writer_name,
+				  partial_copy_option: partial_copy_option,
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (result) {
+                    alert(result.message);
+                }
+            });
+        } else {
+            alert("취소")
+        }
+	
+})
+
+$('body').on('click', '.partial_delete_btn_for_user', function (e) {
+    e.preventDefault();
+    const writer_start = $(this).parent().find(".writer_start").val();
+    const writer_end = $(this).parent().find(".writer_end").val();
+    // const user_start = $(this).parent().find(".user_start").val();
+    // const user_end = $(this).parent().find(".user_end").val();
+    const writer_name = $(this).data("username");
+	console.log("삭제 버튼 클릭");
+	console.log(writer_start,writer_end,writer_name);
+
+    let writer_rang = writer_end - writer_start
+    // let user_rang = user_end - user_start
+
+	const yn = confirm(`부분 복사 (ca${writer_start} ~ ca${writer_end}) 에 대한 삭제를 실행합니까? `, "");
+
+    if (yn) {
+            $.ajax({
+                type: "POST",
+                url: '/wm/myshortcut/partial_delete_btn_for_user',
+                data: {
+                  writer_start: writer_start,
+                  writer_end: writer_end,
+                //   user_start: user_start,
+                //   user_end:user_end,
+                  writer_name:writer_name,
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (result) {
+                    alert(result.message);
+                }
+            });
+        } else {
+            alert("취소")
+        }	
+	
+});
+
+
+// edit_component.html
+$(document).on('click', '.partial_move_btn_for_user', function (e) {
+	// alert("부분 복사 버튼 클릭")
+    // console.log("부분 복사 버튼 클릭 확인")
+    e.preventDefault();
+    const writer_start = $(this).parent().find(".writer_start").val();
+    const writer_end = $(this).parent().find(".writer_end").val();
+    const user_start = $(this).parent().find(".user_start").val();
+    const user_end = $(this).parent().find(".user_end").val();
+    const writer_name = $(this).data("username");
+
+    let writer_rang = writer_end - writer_start
+    let user_rang = user_end - user_start
+	
+    if(writer_rang === user_rang){
+      console.log("부분 복사를 실행 하겠습니다");
+    } else {
+      alert("범위가 다르므로 복사를 취소 하겠습니다.");
+      return;
+    }		
+	// 입력값 확인
+	// console.log(writer_start,writer_end,user_start,user_end,writer_name);
+	const yn = confirm(`부분 복사 (ca${writer_start} ~ ca${writer_end} => ca${user_start} ~ ca${user_end})  실행합니까? `, "");
+
+    if (yn) {
+            $.ajax({
+                type: "POST",
+                url: '/wm/myshortcut/partial_move_for_my_note',
+                data: {
+                  writer_start: writer_start,
+                  writer_end: writer_end,
+                  user_start: user_start,
+                  user_end:user_end,
+                  writer_name:writer_name,
+                  csrfmiddlewaretoken: '{{ csrf_token }}'
+                },
+                success: function (result) {
+                    alert(result.message);
+                }
+            });
+        } else {
+            alert("취소")
+        }
+
+})
+
 
 // 2244
 $('body').on('click', '#change_user_id_to_me', function (e) {
@@ -824,14 +1006,14 @@ $('body').on('click', '#change_user_id_to_me', function (e) {
 
 $('body').on('click', '.guest_book_list_btn', function (e) {
 	const url = "guest_book_list/{{request.user}}"
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.get(url)
 		.done((result) => {
 			$("#guest_list_table_area").html(result)
 			$("#guest_book_list_modal").modal();
 
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 			// // $(".navbar").hide();
 
 		})
@@ -851,7 +1033,7 @@ $('body').on('click', '.short_delete_button', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_shortcut_ajax/' + id,
+		url: '/wm/myshortcut/delete_shortcut_ajax/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -906,7 +1088,7 @@ function modify_for_file_name(id){
 		};
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_skil_note_file_name/' + id,
+			url: '/wm/myshortcut/update_skil_note_file_name/' + id,
 			data: {
 				file_name: file_name,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -935,7 +1117,7 @@ $('body').on('click', '.file_history_button', function (e) {
 	const file_name = $("#file_"+id).val();
 	const search_option = "file_history"
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	$.ajax({
 		type: "POST",
 		url: 'search_by_id_and_word/',
@@ -948,7 +1130,7 @@ $('body').on('click', '.file_history_button', function (e) {
 			// alert("result: ", result)
 			$("#wm_list_area_for_popup").html("")
 			$("#wm_list_area_for_popup").append(result)
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
+			window.history.pushState("", "", '/wm/myshortcut/')
 		}
 	});
 
@@ -970,7 +1152,7 @@ $('body').on('click', '.skil_note_file_name_update_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_skil_note_file_name/' + id,
+		url: '/wm/myshortcut/update_skil_note_file_name/' + id,
 		data: {
 			file_name: file_name,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1068,7 +1250,7 @@ $('body').on('dblclick', '#textarea_title_for_skill_note_btn', function (e) {
 
 $('body').on('click', '#insert_first_for_skill_note_btn', function (e) {
 	console.log("첫글 버튼 클릭 확인");
-	window.history.pushState("", "", '/skilnote1/myshortcut2/')
+	window.history.pushState("", "", '/wm/myshortcut2/')
 	const option = prompt("1.input, 2.textArea 3.summer_note ","");
 	const title = prompt("title을 입력해 주세요 ", "");
 
@@ -1092,7 +1274,7 @@ $('body').on('click', '#insert_first_for_skill_note_btn', function (e) {
 			success: function (result) {
 				$('#empty_state').remove()
 				alert("result : ", result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut2/')
+				window.history.pushState("", "", '/wm/myshortcut2/')
 
 				var table_row = $('.table_row').length;
 
@@ -1167,7 +1349,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 	const ca_num = $("#current_category").text();
 	console.log("ca_num : ", ca_num);
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 
 	const afterStr = ca_num.split('a');
@@ -1189,7 +1371,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/category_minus_1_for_current_user',
+			url: '/wm/myshortcut/category_minus_1_for_current_user',
 			data: {
 				'current_ca_num': current_ca_num,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1197,7 +1379,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 			success: function (result) {
                 $("#loading_for_copy_minus1").removeClass("spinner-border spinner-border-sm");
 				alert("result : "+ result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -1211,7 +1393,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 
 $('body').on('click', '#ca_plus_1_btn', function (e) {
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	const ca_num = $("#current_category").text();
 	console.log("ca_num : ", ca_num);
@@ -1230,7 +1412,7 @@ $('body').on('click', '#ca_plus_1_btn', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/category_plus_1_for_current_user',
+			url: '/wm/myshortcut/category_plus_1_for_current_user',
 			data: {
 				'current_ca_num': current_ca_num,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1238,7 +1420,7 @@ $('body').on('click', '#ca_plus_1_btn', function (e) {
 			success: function (result) {
 				$("#loading_for_copy_plus1").removeClass("spinner-border spinner-border-sm");
 				alert("result : "+ result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				location.reload(true);
 			}
@@ -1255,7 +1437,7 @@ $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 	const current_article_id = this.id
 	console.log("current_article_id : "+current_article_id);
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -1265,7 +1447,7 @@ $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
 		success: function (result) {
-			window.history.pushState("", "", '/skilnote1/new/SkilNoteCreateView_image_through/'+current_article_id)
+			window.history.pushState("", "", '/wm/new/SkilNoteCreateView_image_through/'+current_article_id)
 			$(".insert_form_area_for_image").html(result);
 			$("#insert_image_between_popup").modal()
 			// // $(".navbar").hide();
@@ -1277,7 +1459,7 @@ $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const current_article_id = this.id
 
@@ -1296,7 +1478,7 @@ $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 			},
 			success: function (result) {
 				alert(result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -1307,7 +1489,7 @@ $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 });
 
 $('body').on('click', '.shortcut_between_button_input' , function (e) {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const current_article_id = this.id
 
@@ -1325,7 +1507,7 @@ $('body').on('click', '.shortcut_between_button_input' , function (e) {
 			},
 			success: function (result) {
 				alert("insert input between success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 
 			}
@@ -1341,18 +1523,18 @@ $('body').on('click', '.shortcut_between_button_input' , function (e) {
 $('body').on('click', '.shortcut_between_button_sn', function (e) {
 	// alert("클릭 확인")
 	const current_article_id = this.id
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
-		url: 'new/textarea_summer_note_through2/'+current_article_id,
+		url: 'new/textarea_summer_note_through4/'+current_article_id,
 		data: {
 			'current_article_id': current_article_id,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
 		success: function (result) {
 
-			window.history.pushState("", "", '/skilnote1/new/textarea_summer_note_through2/'+current_article_id)
+			window.history.pushState("", "", '/wm/new/textarea_summer_note_through4/'+current_article_id)
 			// alert(result)
 			$(".summernote_content_for_popup").html(result);
 			$("#sumemr_note_popup").modal()
@@ -1415,7 +1597,7 @@ $('body').on('click', '#move_to_skilblog_btn', function (e) {
 		return;
 	};
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "POST",
@@ -1439,7 +1621,7 @@ $('body').on('click', '.next_channer_btn', function (e) {
 	ch_name = "ca"+number;
 	// $(".go_btn").trigger("click");
 	// window.location.href = `/myshortcut2/#shortcut_{${number}}`
-	window.location.href = `/skilnote1/myshortcut2/category/ca${number}/`
+	window.location.href = `/wm/myshortcut2/category/ca${number}/`
 
 });
 
@@ -1452,7 +1634,7 @@ $('body').on('click', '.edit_complete_skill_note_for_backend_btn', function (e) 
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_complete_skill_note_for_backend/' + id,
+		url: '/wm/myshortcut/edit_complete_skill_note_for_backend/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1495,7 +1677,7 @@ $('body').on('click', '.edit_complete_skill_note_for_front_end_btn', function (e
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_complete_skill_note_for_front_end/' + id,
+		url: '/wm/myshortcut/edit_complete_skill_note_for_front_end/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1532,7 +1714,7 @@ $('body').on('click', '.edit_temp_skill_note_using_textarea_for_backend_btn', fu
 	var content2 = $("#select-textarea-" + id).val();
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_using_textarea_for_backend/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_using_textarea_for_backend/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1551,7 +1733,7 @@ $('body').on('click', '.edit_temp_skill_note_using_input_for_backend_btn', funct
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_using_input_for_backend/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_using_input_for_backend/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1575,7 +1757,7 @@ $('body').on('click', '.update_temp_skil_title_for_bacekend_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skil_title_for_backend/' + id,
+		url: '/wm/myshortcut/update_temp_skil_title_for_backend/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1593,7 +1775,7 @@ $('body').on('click', '.delete_temp_skill_note_for_backendarea_btn', function (e
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_temp_skill_note_for_backendarea/' + id,
+		url: '/wm/myshortcut/delete_temp_skill_note_for_backendarea/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -1609,7 +1791,7 @@ $('body').on('click', '.delete_temp_skill_note_for_backendarea_btn', function (e
 
 $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
 	// alert("new1 버튼 클릭")
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1627,7 +1809,7 @@ $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
 			success: function (result) {
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				var table_row = $('.table_row').length;
 				// alert("table_row : "+ table_row)
@@ -1652,7 +1834,7 @@ $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
 })
 
 $(".insert_temp_skill_note_using_textarea_for_backend_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1694,7 +1876,7 @@ $('body').on('click', '.temp_memo_for_backend_btn', function (e) {
 	$("#temp_skill_for_backend_modal").modal();
 
 	const url = ""
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "GET",
@@ -1711,7 +1893,7 @@ $('body').on('click', '.temp_memo_for_backend_btn', function (e) {
 });
 
 $(".insert_temp_skill_note_for_input_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1729,7 +1911,7 @@ $(".insert_temp_skill_note_for_input_btn").click(function () {
 			success: function (result) {
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				var table_row = $('.table_row').length;
 				// alert("table_row : "+ table_row)
@@ -1761,7 +1943,7 @@ $('body').on('click', '.show_delete_temp_memo_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_temp_memo_by_ajax/' + id,
+		url: '/wm/myshortcut/delete_temp_memo_by_ajax/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -1780,7 +1962,7 @@ $('body').on('click', '.edit_temp_skill_note_for_input_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_for_input/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_for_input/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1800,7 +1982,7 @@ $('body').on('click', '.edit_temp_skill_note_for_textarea_btn', function (e) {
 	var content2 = $("#select-textarea-" + id).val();
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skill_note_for_textarea/' + id,
+		url: '/wm/myshortcut/update_temp_skill_note_for_textarea/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1819,7 +2001,7 @@ $('body').on('click', '.shortcut_edit_button1', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_shortcut1_ajax/' + id,
+		url: '/wm/myshortcut/update_shortcut1_ajax/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1833,7 +2015,7 @@ $('body').on('click', '.shortcut_edit_button1', function (e) {
 
 $(".insert_temp_skill_note_for_textarea_btn").click(function () {
 	// alert("new2 버튼 클릭")
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1883,7 +2065,7 @@ $('body').on('click', '.update_temp_skil_title_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skil_title/' + id,
+		url: '/wm/myshortcut/update_temp_skil_title/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1897,7 +2079,7 @@ $('body').on('click', '.update_temp_skil_title_btn', function (e) {
 
 $('body').on('click', '.temp_memo_btn', function (e) {
 	const url = ""
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "GET",
@@ -1924,7 +2106,7 @@ $('body').on('click', '.temp_memo_btn', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_shortcut2_ajax/' + id,
+			url: '/wm/myshortcut/update_shortcut2_ajax/' + id,
 			data: {
 				id: id,
 				content2: content2,
@@ -1951,7 +2133,7 @@ function enter_for_search_skil_note(){
 
 $('body').on('click', '.skill_search_button', function (e) {
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	const search_word = $(".skill_input_box").val();
 	console.log("search_word : " + search_word);
@@ -1963,7 +2145,7 @@ $('body').on('click', '.skill_search_button', function (e) {
 			// alert("check")
 		}
 	});
-	// window.history.pushState("", "", '/skilnote1/myshortcut/')
+	// window.history.pushState("", "", '/wm/myshortcut/')
 	$.ajax({
 		type: "POST",
 		url: 'search_by_id_and_word/',
@@ -1973,7 +2155,7 @@ $('body').on('click', '.skill_search_button', function (e) {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 			},
 		success: function (result) {
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
+			window.history.pushState("", "", '/wm/myshortcut/')
 			// alert("success");
 			// alert("result: "+ result)
 			$("#wm_list_area_for_popup").html("")
@@ -2016,7 +2198,7 @@ $('body').on('click', '.update_nick_button', function (e) {
 	}
 	console.log("user를 수정 합니다");
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "POST",
@@ -2103,7 +2285,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 	// alert("title : " + title);
 	// alert("content : " + content);
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -2115,7 +2297,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 		},
 		success: function (result) {
 			alert(result.message);
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
+			window.history.pushState("", "", '/wm/myshortcut/')
 		}
 	});
 });
@@ -2125,7 +2307,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 		// alert("댓글 삭제 버튼 클릭");
 		const comment_id = this.id;
 
-		window.history.pushState("", "", '/skilnote1/')
+		window.history.pushState("", "", '/wm/')
 
 		$.ajax({
 			type: "POST",
@@ -2136,7 +2318,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 			success: function (result) {
 				alert(result.message);
 				$("#comment_table_" + comment_id).remove()
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				const comment_count = parseInt($("#comment_count_area").text().trim()) - 1
 
@@ -2162,7 +2344,7 @@ $('body').on('click', '.shortcut_comment_button', function (e) {
 		return;
 	};
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 	if (option == "y") {
 		$.ajax({
 			type: "POST",
@@ -2174,7 +2356,7 @@ $('body').on('click', '.shortcut_comment_button', function (e) {
 			success: function (result) {
 				alert(result.message);
 
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -2202,7 +2384,7 @@ $(".go_to_before_channer_btn").click(function () {
 		category_id = 1
 	}
 	nect_ch_url = $("#ca_" + category_id).attr('href')
-	window.location.href = `/skilnote1/myshortcut2/category/ca${category_id}/`
+	window.location.href = `/wm/myshortcut2/category/ca${category_id}/`
 
 })
 
@@ -2219,7 +2401,7 @@ $(".go_to_next_channer_btn").click(function () {
 
 	next_ch_url = $("#ca_" + category_id).attr('href')
 	console.log("next_ch_url : " + next_ch_url);
-	window.location.href = `/skilnote1/myshortcut2/category/ca${category_id}/`
+	window.location.href = `/wm/myshortcut2/category/ca${category_id}/`
 
 
 })
@@ -2241,7 +2423,7 @@ $(".go_end_line_btn").click(function () {
 })
 
 $(".new4_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("textbox 5개를 만드시겠습니까? (x,y)", "");
 
 	if (!title) {
@@ -2258,7 +2440,7 @@ $(".new4_btn").click(function () {
 			success: function (result) {
 				$('#empty_state').remove()
 				alert(result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -2270,7 +2452,7 @@ $(".new4_btn").click(function () {
 
 
 $(".new1_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -2289,7 +2471,7 @@ $(".new1_btn").click(function () {
 				$('#empty_state').remove()
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				var table_row = $('.table_row').length;
 
@@ -2315,7 +2497,7 @@ $(".new1_btn").click(function () {
 })
 
 $(".new2_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const filename = prompt("file 이름을 입력해 주세요");
 
@@ -2421,7 +2603,7 @@ $("#modify_category_button").click(function (e) {
 			alert("txt : " + category + "로 " + shortcut_arr + "를 이동")
 		}
 
-		window.history.pushState("", "", '/skilnote1/myshortcut/')
+		window.history.pushState("", "", '/wm/myshortcut/')
 
 		$.ajax({
 			type: "POST",
@@ -2433,7 +2615,7 @@ $("#modify_category_button").click(function (e) {
 			},
 			success: function (result) {
 				alert(shortcut_arr + "을 " + category + '로 이동');
-				window.history.pushState("", "", '/skilnote1/myshortcut2/')
+				window.history.pushState("", "", '/wm/myshortcut2/')
 
 				jQuery('input:checkbox:checked').parents("table").remove();
 			}
@@ -2457,7 +2639,7 @@ $('#shortcut_delete_button').click(function (e) {
 	});
 	// alert('todo_arr : '+ shortcut_arr)
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	option = prompt("삭제 하실래요(x,y)?", "");
 
@@ -2472,7 +2654,7 @@ $('#shortcut_delete_button').click(function (e) {
 				},
 				success: function (result) {
 					alert('todo_delete_ajax is success ');
-					window.history.pushState("", "", '/skilnote1/myshortcut2/')
+					window.history.pushState("", "", '/wm/myshortcut2/')
 					jQuery('input:checkbox:checked').parents("table").remove();
 				}
 			});
@@ -2513,7 +2695,7 @@ $(".go_btn").click(function () {
 $(".favorite_user_list_btn").click(function () {
 	// alert("favorite user list 클릭");
 	const url = "favorite_user_list/byajax"
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.get(url)
 		.done((result) => {
@@ -2522,7 +2704,7 @@ $(".favorite_user_list_btn").click(function () {
 			$("#user_table_area").html(result)
 			$("#user_list_modal").modal();
 
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 			// // $(".navbar").hide();
 
 		})
@@ -2537,14 +2719,14 @@ $(".favorite_user_list_btn").click(function () {
 
 $(".user_list_btn").click(function () {
 	const url = "userlist/byajax"
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.get(url)
 		.done((result) => {
 			$("#user_table_area").html(result)
 			$("#user_list_modal").modal();
 
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 
 		})
 		.fail(() => {
@@ -2557,7 +2739,7 @@ $(".user_list_btn").click(function () {
 
 $('.category_name_list_button').click(function (e) {
 	const user_name = $("#shortcut_user_id").val();
-	const url = '/skilnote1/myshorcut/nicklist/' + user_name
+	const url = '/wm/myshorcut/nicklist/' + user_name
 	const ch = $("#current_category").text()
 
 	$.get(url)
@@ -2584,7 +2766,7 @@ $('.update_shortcut_user_id').click(function (e) {
 	const id = this.id
 	const user_id = $("#shortcut_user_id").val()
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -2601,8 +2783,8 @@ $('.update_shortcut_user_id').click(function (e) {
 			}
 			// alert(original_id)
 			// alert("id 교체 실행")
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
-			location.href = "/skilnote1/myshortcut/"
+			window.history.pushState("", "", '/wm/myshortcut/')
+			location.href = "/wm/myshortcut/"
 		}
 	});
 })
@@ -2622,7 +2804,7 @@ $('body').on('click', '.shortcut_edit_button2', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_shortcut2_ajax/' + id,
+			url: '/wm/myshortcut/update_shortcut2_ajax/' + id,
 			data: {
 				id: id,
 				content2: content2,
@@ -2681,7 +2863,7 @@ $('body').on('click', '.short_update_button', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_shortcut_ajax/' + id,
+		url: '/wm/myshortcut/update_shortcut_ajax/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'

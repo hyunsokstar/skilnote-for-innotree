@@ -24,5 +24,4 @@ urlpatterns = [
     path('delete_login_user/', views.delete_login_user, name="delete_login_user"),
 
 
-
 ]

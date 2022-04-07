@@ -41,16 +41,11 @@ class AllowListForSkilNote(models.Model):
     message = models.CharField(max_length=30, blank=True)
     color = models.CharField(max_length=10, blank=True)
 
-
 class LikeGuestBook(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE) # 누구에 대한 좋아요인가?
     author_id = models.CharField(max_length=40) # 누가 좋아요를 눌렀나?
 
-class GuestBook(models.Model):
-    owner_for_guest_book = models.ForeignKey(User, on_delete=models.CASCADE, related_name="+")
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.CharField(max_length=120)
-    created_at = models.DateTimeField(auto_now_add=True , editable = False)
+# LectureList (author, title, lecture, description)
 
 class RecommandationUserAboutSkillNote(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
@@ -64,7 +59,7 @@ class Category(models.Model):
     def __str__(self):
         return self.name
     def get_absolute_url(self):
-            return '/skilnote1/myshortcut/category/{}/'.format(self.slug)
+            return '/wm/myshortcut/category/{}/'.format(self.slug)
 
 class Type(models.Model):
     type_name = models.CharField(max_length=20)
@@ -104,6 +99,7 @@ class TempMyShortCutForBackEnd(models.Model):
 
 
 # skil note용 모델
+# D:\new-skilnote\skilnote-for-jpa\wm\models.py
 class MyShortCut(models.Model):
     title = models.CharField(max_length=120)
     filename= models.CharField(max_length=120, blank=True)
@@ -111,6 +107,10 @@ class MyShortCut(models.Model):
     content2 = models.TextField(blank=True)
     created = models.DateTimeField(auto_now_add=False)
     author = models.ForeignKey(User, on_delete=models.CASCADE)
+    # 팀 멤버가 author일 경우 이 필드에 팀 유저 이름 저장
+    page_user = models.CharField(max_length=20, blank=True, null=True)
+    team_member = models.CharField(max_length=20, blank=True, null=True)
+
     category = models.ForeignKey(Category, blank=True, null=True, on_delete=models.CASCADE)
     type= models.ForeignKey(Type, on_delete=models.CASCADE)
     image = models.ImageField(upload_to='wm/%y%m%d', blank=True)

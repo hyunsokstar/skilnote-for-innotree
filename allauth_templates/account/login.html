@@ -1,5 +1,5 @@
 {% extends "layout.html" %} {% load crispy_forms_tags %}
-
+{% load static %}
 <!-- {% load i18n %} -->
 <!-- {% load account socialaccount %} -->
 {% load static %} {% block head_title %}{% trans "Sign In" %}{% endblock %}
@@ -27,7 +27,7 @@
 
 
 <div class="login-container">
-  <!-- <h1 class="login-title">Skil Note</h1> -->
+  <h1 class="login-title">Skil Note For innotree &nbsp;&nbsp;</h1>
   <form method="post" class="login-form">
     <!-- {% csrf_token %} {{ form.as_p }} -->
     {% csrf_token %} {{ form|crispy }}
@@ -38,13 +38,22 @@
     </button>
   </form>
 </div>
-<br />
 
+<div class="common_subject_list_area">
+    
 </div>
 
-<div class="user_list_container">
-    <!-- 유저 정보 출력 -->
+<br><br>
+
+<div class="user_list_area">
+  <!-- 유저 정보 출력 -->
+</div>
+
+<br />
+
   </div>
+</div>
+
 
 <script src="{% static 'script/login.js' %}"></script>
 
@@ -52,11 +61,26 @@
 
 <script type="text/javascript">
   {% block extra_js %}
+
   $(document).ready(function () {
-    const url = "/skilnote1/userlist/loginpage"
+    const url = "/wm/myshortcut/common_subject_list"
     $.get(url)
       .done((result) => {
-        $(".user_list_container").html(result)
+        $(".common_subject_list_area").html(result)
+      })
+      .fail(() => {
+        console.log("fail");
+      })
+      .always(() => {
+        console.log('always');
+      })
+  });
+
+  $(document).ready(function () {
+    const url = "/wm/userlist/loginpage"
+    $.get(url)
+      .done((result) => {
+        $(".user_list_area").html(result)
       })
       .fail(() => {
         console.log("fail");

@@ -13,13 +13,13 @@ button, input, a {
 .sideicon_for_scroll{
 	position:fixed;
 	colort:blue;
-	top:76px;
+	top:120px;
 	right:1px;;
 }
 .sideicon_for_insert{
 	position:fixed;
 	colort:blue;
-	top:60px;
+	top:80px;
 	right:1px;;
 }
 .sideicon_for_move{
@@ -30,7 +30,7 @@ button, input, a {
 }
 .temp_memo_btn_area {
 	position:fixed;
-	top:60px;
+	top:120px;
 	left:5px;
 }
 .jbFixed {
@@ -41,11 +41,20 @@ button, input, a {
 	background-color:green
 }
 img.Image { max-width: 100%; display: block; }
+
+.ca-btn,
+.ca-btn-selected 
+{
+	display:inline-block;
+	width: 50px;
+	height: 24px;
+}
+
 {% endblock %}
 
 {%block content4 %}
-<br>
-<h2 class="">skilnote1</h2>
+<br><br><br><br>
+<h2>wm</h2>
 <table class="table table-bordered">
 	<tr>
 		<td width="">
@@ -74,19 +83,21 @@ img.Image { max-width: 100%; display: block; }
 		</td>
 	</tr>
 	<tr>
+
 		<td width="80%">
 			{% for category in category_list %}
 			{% ifequal category.id request.user.profile.selected_category_id %}
 			<a style="background-color:yellow" class="btn btn-outline-info btn-sm ca-btn-selected"
-				href="{{category.get_absolute_url}}" id={{category.id}}>{{ category.name }} </a>
+				href="/wm/myshortcut/category/ca{{category.id}}" id={{category.id}}>{{ category.name }} </a>
 			{% else %}
 			<a class="btn btn-outline-info btn-sm ca-btn-{{category.id}} ca-btn" id=ca_{{category.id}}
-				href="{{category.get_absolute_url}}">{{ category.name }} </a>
+				href="/wm/myshortcut/category/ca{{category.id}}">{{ category.name }} </a>
 			{% endifequal %}
 			{% endfor %}
 		</td>
 	</tr>
 </table>
+
 
 {% if messages %}
 <div class="alert alert-success">
@@ -96,7 +107,7 @@ img.Image { max-width: 100%; display: block; }
 </div>
 {% endif %}
 <div class="sideicon_for_scroll">
-	<button class="new3_btn btn btn-outline-dark btn-sm" onclick="window.location.href = '{% url 'wm:my_shortcut_list2' %}';">입력</button><br>
+	<button class="insert-mode btn btn-outline-dark btn-sm" onclick="window.location.href = '{% url 'wm:my_shortcut_list2' %}';">입력</button><br>
 	<button class="new3_btn btn btn-outline-dark btn-sm" onclick="window.location.href = '{% url 'wm:insert_myshortcut_textarea_summer_note' %}';">SN</button><br>
 	<button type="button" name="button" class="new1_btn btn btn-outline-dark btn-sm" id="">인풋</button><br>
 	<button type="button" name="button" class="new2_btn btn btn-outline-dark btn-sm" id="">text</button><br>
@@ -128,7 +139,16 @@ img.Image { max-width: 100%; display: block; }
 <div class="temp_memo_btn_area">
 	<button type="button" name="button" class="temp_memo_btn btn btn-outline-dark btn-sm" id="">m1</button> <br>
 	<button type="button" name="button" class="temp_memo_for_backend_btn btn btn-outline-dark btn-sm" id="">m2</button><br>
-	<button type="button" class="btn btn-outline-dark guest_book_list_btn btn-sm">계획</button> <br>
+
+	<!-- <button type="button" class="btn btn-outline-dark guest_book_list_btn btn-sm">lecture(구현중)</button> <br> -->
+	<button type="button" class="btn btn-outline-dark lecture_list_for_user_button btn-sm">lecture</button> <br>
+
+	<!-- <button type="button" class="btn btn-outline-warning refer-note-for-user btn-sm"> 
+		참고
+	</button> <br> -->
+	
+	<button type="button" class="btn btn-outline-dark plan_btn btn-sm">Plan</button> <br>
+
 	<button type="button" class="btn btn-outline-dark btn-sm">슬랙</button><br>
 	<a href="" class="btn btn-outline-primary btn-sm" id="insert_first_for_skill_note_btn"> first</a> <br>
 	<a href="" class="btn btn-outline-primary btn-sm" id="modify_category_button"> 이동</a> <br>
@@ -141,7 +161,10 @@ img.Image { max-width: 100%; display: block; }
 		 c-1
 		 <span class="" id="loading_for_copy_minus1" role="status" aria-hidden="true"></span>
 	 </a><br>
+
 	<a href="" class="btn btn-outline-primary btn-sm" id="move_to_skilblog_btn">칼럼</a> <br>
+	<!-- <a href="" class="btn btn-outline-warning btn-sm" id="">보충 노트(구현중)</a> <br> -->
+
 </div>
 
 <table class="table table-bordered category_subject_table" width="1110" style="">
@@ -160,42 +183,9 @@ img.Image { max-width: 100%; display: block; }
 {% if object_list.exists %}
 	{% for p in object_list %}
 		<table class="table table-bordered table_row" id="todo_list">
-			<!-- {% ifequal p.type.type_name "input" %}
-				<tr id="shortcut_{{p.id}}" style="background-color:#f1f9f0;">
-					<td id=index_{{ forloop.counter }} width="10%">
-						<input type="checkbox" id="{{p.pk}}" class="shortcut_check">
-						{{ forloop.counter }}
-					</td>
-					<td id="input_title_for_skill_note_btn">
-						<span id=title_{{p.id}}>
-							{{p.title}}
-						</span>
-						<span id="title-area-{{p.id}}" style="color: red;">&nbsp;&nbsp;<span>
-						{% if p.author == request.user %}
-							<button class="badge badge-pill badge-primary short_delete_button float-right" id="{{p.id}}">삭제</button>
-							<button class="badge badge-pill badge-primary short_update_button float-right" id="{{p.id}}">제목 수정</button>
-						{% endif %}
-					</td>
-				</tr>
-
-				<tr id="shortcut_{{p.id}}-2" style="background-color:#fcfaeb">
-					<td colspan="2">
-
-						<input type="text" name="" value="{{p.content1}}" size="40" id="select-input-{{p.id}}" class="form-control">
-							<button class="btn btn-outline-danger btn-sm myinput float-right copy_code1" id="{{p.id}}" data-num = {{ forloop.counter }}>copy</button>
-							<button class="btn btn-outline-danger btn-sm float-right shortcut_edit_button1" id="{{p.id}}">edit_complete</button>
-							<button class="btn btn-outline-danger btn-sm shortcut_comment_button" id="{{p.id}}">댓글</button>
-							<button class="btn btn-outline-danger btn-sm shortcut_between_button_sn" id="{{p.id}}">sn</button>
-							<button class="btn btn-outline-danger btn-sm shortcut_between_button_input" id="{{p.id}}">ip</button>
-							<button class="btn btn-outline-danger btn-sm shortcut_between_button_textarea" id="{{p.id}}">ta</button>
-							<button class="btn btn-outline-danger btn-sm input_beteween_image_for_skill_note_btn" id="{{p.id}}">pi</button>
-
-					</td>
-				</tr>
-			{% endifequal %} -->
 
 			{% ifequal p.type.type_name "textarea" %}
-					<tr id="shortcut_{{p.id}}" style="background-color:#f1f9f0; max-width:100%;">
+					<tr id="shortcut_{{p.id}}" style="background-color:#d1e8cf; max-width:100%;">
 					<td id=index_{{ forloop.counter }} width="10%">
 						<input type="checkbox" id="{{p.pk}}" class="shortcut_check">
 						{{ forloop.counter }}
@@ -210,7 +200,7 @@ img.Image { max-width: 100%; display: block; }
 					</td>
 				</tr>
 			{% endif %}
-				<tr id="shortcut_{{p.id}}-2" style="background-color:#f1f9f0" >
+				<tr id="shortcut_{{p.id}}-2" style="background-color:#d1e8cf" >
 					<td>file</td>
 					<td ondblclick="copy_for_file_name2({{p.id}})">
 						<span>
@@ -244,7 +234,7 @@ img.Image { max-width: 100%; display: block; }
 			{% endifequal %}
 
 			{% ifequal p.type.type_name "summer_note" %}
-				<tr id="shortcut_{{p.id}}" style="background-color:#f1f9f0">
+				<tr id="shortcut_{{p.id}}" style="background-color:#d1e8cf">
 					<td id=index_{{ forloop.counter }} width="10%">
 						<input type="checkbox" id="{{p.pk}}" class="shortcut_check">
 						{{ forloop.counter }}
@@ -259,7 +249,7 @@ img.Image { max-width: 100%; display: block; }
 						{% endif %}
 					</td>
 				</tr>
-				<tr id="shortcut_{{p.id}}-2" style="background-color:#f1f9f0">
+				<tr id="shortcut_{{p.id}}-2" style="background-color:#d1e8cf">
 					<td>file</td>
 					<td>
 						<span ondblclick = "modify_for_file_name({{p.id}})">
@@ -580,9 +570,28 @@ img.Image { max-width: 100%; display: block; }
 	</div>
 </div>
 
+<!-- plan modal -->
+<div class="modal fade" id="plan-modal" role="dialog">
+	<div class="modal-dialog modal-xl">
+		<!-- Modal content-->
+		<div class="modal-content">
+			<div class="modal-header">
+				<h4 class="modal-title">plan</h4>
+				<button type="button" class="close" data-dismiss="modal">&times;</button>
+			</div>
+			<div class="modal-body" id="plan_list_table_area">
+				<!-- 내용 출력 부분 -->
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+			</div>
+		</div>
+	</div>
+</div>
+
 <script class="temp_skill_note_row_for_input" type="text/x-template">
 	<table class="table table-bordered table_row" id="todo_list" width="100%">
-		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#f1f9f0" >
+		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#d1e8cf" >
 			<td class="counter_row">
 				<input type="checkbox" id="<%=shortcut_id%>" class="shortcut_check" >
 					<%=table_row_id %>
@@ -609,7 +618,7 @@ img.Image { max-width: 100%; display: block; }
 <!-- mini note for backend modal insert textarea -->
 <script class="temp_skill_note_row_for_textarea" type="text/x-template">
 	<table class="table table-bordered table_row" id="todo_list" width="100%">
-		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#f1f9f0">
+		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#d1e8cf">
 			<td id=index_{{ forloop.counter }} width="10%">
 				<input type="checkbox" id="<%=shortcut_id%>" class="shortcut_check">
 				<%=table_row_id %>
@@ -638,7 +647,7 @@ img.Image { max-width: 100%; display: block; }
 
 <script class="myshortcut_row" type="text/x-template">
 	<table class="table table-bordered table_row" id="todo_list" width="100%">
-		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#f1f9f0" >
+		<tr id="shortcut_<%=shortcut_id%>" style="background-color:#d1e8cf" >
 			<td class="counter_row" width="10%">
 				<input type="checkbox" id="<%=shortcut_id%>" class="shortcut_check" >
 					<%=table_row_id %>
@@ -666,7 +675,7 @@ img.Image { max-width: 100%; display: block; }
 <script class="myshortcut_row_textarea" type="text/x-template">
 
 <table class="table table-bordered table_row" id="todo_list" width="100%">
-    <tr id="shortcut_<%=shortcut_id%>" style="background-color:#f1f9f0">
+    <tr id="shortcut_<%=shortcut_id%>" style="background-color:#d1e8cf">
         <td id=index_{{ forloop.counter }} width="10%">
             <input type="checkbox" id="<%=shortcut_id%>" class="shortcut_check" id="file_<%=shortcut_id%>">
             <%=table_row_id %>
@@ -681,7 +690,7 @@ img.Image { max-width: 100%; display: block; }
             <button class="badge badge-pill badge-primary short_update_button float-right" id="<%=shortcut_id%>"">제목 수정</button>
         </td>
     </tr>
-	<tr style="background-color:#f1f9f0" id="shortcut_<%=shortcut_id%>-3">
+	<tr style="background-color:#d1e8cf" id="shortcut_<%=shortcut_id%>-3">
 		<td>file</td>
 		<td>
 			<span id="file_<%=shortcut_id%>" ondblclick = "modify_for_file_name(<%=shortcut_id%>)">
@@ -719,19 +728,51 @@ $(function() {
     if (e.ctrlKey && e.which === 39) {
 	  $(".go_to_next_channer_btn").trigger("click");
     }
-	if (e.altKey && e.which === 49) {
-	  $(".new3_btn").trigger("click");
-    }
-	if (e.altKey && e.which === 50) {
-	  $(".new1_btn").trigger("click");
-	}
-	if (e.altKey && e.which === 51) {
-	  $(".new2_btn").trigger("click");
-	}
+
 	if (e.altKey && e.which === 52) {
 	  $(".insert_image").trigger("click");
 	}
+
+	// alt + 2 : 인서트 모드
+	if (e.altKey && e.which === 50) {
+		console.log("리드 모드");
+	  $(".insert-mode").trigger("click");
+    }	
+
+	if (e.ctrlKey && e.which === 38) {
+	  $(".before_btn").trigger("click");
+	}
+
+	if (e.ctrlKey && e.which === 40) {
+	  $(".next_btn").trigger("click");
+	}
   })
+});
+
+// refer-note-for-user
+$('body').on('click', '.refer-note-for-user', function (e) {
+	alert("참고 노트 클릭")
+});
+
+$('body').on('click', '.plan_btn ', function (e) {
+	// alert("plan button 클릭")
+	// $("#plan-modal").modal();
+
+    const url = "/myshortcut/plan_list_for_user/{{request.user}}"
+
+    $.get(url)
+        .done((result) => {
+            $("#plan_list_table_area").html(result)
+            $("#plan-modal").modal();
+
+        })
+        .fail(() => {
+            console.log("fail");
+        })
+        .always(() => {
+            console.log('always');
+    })
+
 });
 
 $('body').on('click', '#change_user_id_to_me', function (e) {
@@ -741,16 +782,15 @@ $('body').on('click', '#change_user_id_to_me', function (e) {
 	$(".update_shortcut_user_id").trigger("click");
 });
 
-$('body').on('click', '.guest_book_list_btn', function (e) {
-	const url = "guest_book_list/{{request.user}}"
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+$('body').on('click', '.lecture_list_for_user_button', function (e) {
+	const url = "/wm/myshortcut/lecture_list_for_user"
 
 	$.get(url)
 		.done((result) => {
 			$("#guest_list_table_area").html(result)
 			$("#guest_book_list_modal").modal();
 
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 			// // $(".navbar").hide();
 		})
 		.fail(() => {
@@ -767,7 +807,7 @@ $('body').on('click', '.short_delete_button', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_shortcut_ajax/' + id,
+		url: '/wm/myshortcut/delete_shortcut_ajax/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -819,7 +859,7 @@ function modify_for_file_name(id){
 		};
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_skil_note_file_name/' + id,
+			url: '/wm/myshortcut/update_skil_note_file_name/' + id,
 			data: {
 				file_name: file_name,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -843,7 +883,7 @@ $('body').on('click', '.open_new_tabb', function (e) {
 // file_history_button 2244
 $('body').on('click', '.file_history_button', function (e) {
 	const file_name = $(this).data("file_name");
-	window.location.href = "/skilnote1/myshortcut/searh_by_file_name"+file_name
+	window.location.href = "/wm/myshortcut/searh_by_file_name"+file_name
 });
 
 $('body').on('click', '.skil_note_file_name_update_btn', function (e) {
@@ -858,7 +898,7 @@ $('body').on('click', '.skil_note_file_name_update_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_skil_note_file_name/' + id,
+		url: '/wm/myshortcut/update_skil_note_file_name/' + id,
 		data: {
 			file_name: file_name,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -947,7 +987,7 @@ $('body').on('dblclick', '#textarea_title_for_skill_note_btn', function (e) {
 
 $('body').on('click', '#insert_first_for_skill_note_btn', function (e) {
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const option = prompt("1.input, 2.textArea 3.summer_note ","");
 	const title = prompt("title을 입력해 주세요 ", "");
 
@@ -971,7 +1011,7 @@ $('body').on('click', '#insert_first_for_skill_note_btn', function (e) {
 			success: function (result) {
 				$('#empty_state').remove()
 				alert("result : ", result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				var table_row = $('.table_row').length;
 
@@ -1045,7 +1085,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 	const option = true;
 	const ca_num = $("#current_category").text();
 	console.log("ca_num : ", ca_num);
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const afterStr = ca_num.split('a');
 	const current_ca_num = afterStr[1];
 
@@ -1061,7 +1101,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 		 $("#loading_for_copy_minus1").addClass("spinner-border spinner-border-sm");
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/category_minus_1_for_current_user',
+			url: '/wm/myshortcut/category_minus_1_for_current_user',
 			data: {
 				'current_ca_num': current_ca_num,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1069,7 +1109,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 			success: function (result) {
                 $("#loading_for_copy_minus1").removeClass("spinner-border spinner-border-sm");
 				alert("result : "+ result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -1080,7 +1120,7 @@ $('body').on('click', '#ca_minus_1_btn', function (e) {
 
 $('body').on('click', '#ca_plus_1_btn', function (e) {
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const ca_num = $("#current_category").text();
 	console.log("ca_num : ", ca_num);
 	const afterStr = ca_num.split('a');
@@ -1093,7 +1133,7 @@ $('body').on('click', '#ca_plus_1_btn', function (e) {
 		$("#loading_for_copy_plus1").addClass("spinner-border spinner-border-sm");
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/category_plus_1_for_current_user',
+			url: '/wm/myshortcut/category_plus_1_for_current_user',
 			data: {
 				'current_ca_num': current_ca_num,
 				csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1101,7 +1141,7 @@ $('body').on('click', '#ca_plus_1_btn', function (e) {
 			success: function (result) {
 				$("#loading_for_copy_plus1").removeClass("spinner-border spinner-border-sm");
 				alert("result : "+ result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -1113,7 +1153,7 @@ $('body').on('click', '#ca_plus_1_btn', function (e) {
 $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 	const current_article_id = this.id
 	console.log("current_article_id : "+current_article_id);
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -1123,7 +1163,7 @@ $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
 		success: function (result) {
-			window.history.pushState("", "", '/skilnote1/new/SkilNoteCreateView_image_through/'+current_article_id)
+			window.history.pushState("", "", '/wm/new/SkilNoteCreateView_image_through/'+current_article_id)
 			$(".insert_form_area_for_image").html(result);
 			$("#insert_image_between_popup").modal()
 		}
@@ -1132,7 +1172,7 @@ $('body').on('click', '.input_beteween_image_for_skill_note_btn', function (e) {
 
 $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const current_article_id = this.id
 
@@ -1150,7 +1190,7 @@ $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 			},
 			success: function (result) {
 				alert(result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -1160,7 +1200,7 @@ $('body').on('click', '.shortcut_between_button_textarea' , function (e) {
 });
 
 $('body').on('click', '.shortcut_between_button_input' , function (e) {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const current_article_id = this.id
 
@@ -1178,7 +1218,7 @@ $('body').on('click', '.shortcut_between_button_input' , function (e) {
 			},
 			success: function (result) {
 				alert("insert input between success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 
 			}
@@ -1193,7 +1233,7 @@ $('body').on('click', '.shortcut_between_button_input' , function (e) {
 
 $('body').on('click', '.shortcut_between_button_sn', function (e) {
 	const current_article_id = this.id
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -1203,7 +1243,7 @@ $('body').on('click', '.shortcut_between_button_sn', function (e) {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
 		success: function (result) {
-			window.history.pushState("", "", '/skilnote1/new/textarea_summer_note_through/'+current_article_id)
+			window.history.pushState("", "", '/wm/new/textarea_summer_note_through/'+current_article_id)
 			$(".summernote_content_for_popup").html(result);
 			$("#sumemr_note_popup").modal()
 		}
@@ -1250,7 +1290,7 @@ $('body').on('click', '#move_to_skilblog_btn', function (e) {
 		alert("제목을 입력해 주세요 !");
 		return;
 	};
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "POST",
@@ -1270,7 +1310,7 @@ $('body').on('click', '#move_to_skilblog_btn', function (e) {
 $('body').on('click', '.next_channer_btn', function (e) {
 	const number = $("#ch_input").val();
 	ch_name = "ca"+number;
-	window.location.href = "/skilnote1/myshortcut/category/"+ch_name;
+	window.location.href = "/wm/myshortcut/category/"+ch_name;
 });
 
 $('body').on('click', '.edit_complete_skill_note_for_backend_btn', function (e) {
@@ -1281,7 +1321,7 @@ $('body').on('click', '.edit_complete_skill_note_for_backend_btn', function (e) 
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_complete_skill_note_for_backend/' + id,
+		url: '/wm/myshortcut/edit_complete_skill_note_for_backend/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1314,7 +1354,7 @@ $('body').on('click', '.edit_complete_skill_note_for_front_end_btn', function (e
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_complete_skill_note_for_front_end/' + id,
+		url: '/wm/myshortcut/edit_complete_skill_note_for_front_end/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1350,7 +1390,7 @@ $('body').on('click', '.edit_temp_skill_note_using_textarea_for_backend_btn', fu
 	var content2 = $("#select-textarea-" + id).val();
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_using_textarea_for_backend/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_using_textarea_for_backend/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1369,7 +1409,7 @@ $('body').on('click', '.edit_temp_skill_note_using_input_for_backend_btn', funct
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_using_input_for_backend/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_using_input_for_backend/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1392,7 +1432,7 @@ $('body').on('click', '.update_temp_skil_title_for_bacekend_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skil_title_for_backend/' + id,
+		url: '/wm/myshortcut/update_temp_skil_title_for_backend/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1410,7 +1450,7 @@ $('body').on('click', '.delete_temp_skill_note_for_backendarea_btn', function (e
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_temp_skill_note_for_backendarea/' + id,
+		url: '/wm/myshortcut/delete_temp_skill_note_for_backendarea/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -1423,7 +1463,7 @@ $('body').on('click', '.delete_temp_skill_note_for_backendarea_btn', function (e
 });
 
 $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1441,7 +1481,7 @@ $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
 			success: function (result) {
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				var table_row = $('.table_row').length;
 
 				var raw_template = $('.temp_skill_note_row_for_input').html();
@@ -1464,7 +1504,7 @@ $(".insert_temp_skill_note_using_input_for_backend_btn").click(function () {
 })
 
 $(".insert_temp_skill_note_using_textarea_for_backend_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	if (!title) {
 		return;
@@ -1501,7 +1541,7 @@ $('body').on('click', '.temp_memo_for_backend_btn', function (e) {
 	$("#temp_skill_for_backend_modal").modal();
 
 	const url = ""
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "GET",
@@ -1518,7 +1558,7 @@ $('body').on('click', '.temp_memo_for_backend_btn', function (e) {
 });
 
 $(".insert_temp_skill_note_for_input_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1536,7 +1576,7 @@ $(".insert_temp_skill_note_for_input_btn").click(function () {
 			success: function (result) {
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				var table_row = $('.table_row').length;
 				var raw_template = $('.temp_skill_note_row_for_input').html();
 				var tpl = _.template(raw_template);
@@ -1562,7 +1602,7 @@ $('body').on('click', '.show_delete_temp_memo_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/delete_temp_memo_by_ajax/' + id,
+		url: '/wm/myshortcut/delete_temp_memo_by_ajax/' + id,
 		data: {
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 		},
@@ -1581,7 +1621,7 @@ $('body').on('click', '.edit_temp_skill_note_for_input_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/edit_temp_skill_note_for_input/' + id,
+		url: '/wm/myshortcut/edit_temp_skill_note_for_input/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1599,7 +1639,7 @@ $('body').on('click', '.edit_temp_skill_note_for_textarea_btn', function (e) {
 	var content2 = $("#select-textarea-" + id).val();
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skill_note_for_textarea/' + id,
+		url: '/wm/myshortcut/update_temp_skill_note_for_textarea/' + id,
 		data: {
 			id: id,
 			content2: content2,
@@ -1618,7 +1658,7 @@ $('body').on('click', '.shortcut_edit_button1', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_shortcut1_ajax/' + id,
+		url: '/wm/myshortcut/update_shortcut1_ajax/' + id,
 		data: {
 			id: id,
 			content1: content1,
@@ -1631,7 +1671,7 @@ $('body').on('click', '.shortcut_edit_button1', function (e) {
 });
 
 $(".insert_temp_skill_note_for_textarea_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -1678,7 +1718,7 @@ $('body').on('click', '.update_temp_skil_title_btn', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_temp_skil_title/' + id,
+		url: '/wm/myshortcut/update_temp_skil_title/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
@@ -1692,7 +1732,7 @@ $('body').on('click', '.update_temp_skil_title_btn', function (e) {
 
 $('body').on('click', '.temp_memo_btn', function (e) {
 	const url = ""
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "GET",
@@ -1714,7 +1754,7 @@ $('body').on('click', '.temp_memo_btn', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_shortcut2_ajax/' + id,
+			url: '/wm/myshortcut/update_shortcut2_ajax/' + id,
 			data: {
 				id: id,
 				content2: content2,
@@ -1738,7 +1778,7 @@ function search_note(e){
 
 	alert("search_note 클릭")
 	e.preventDefault();
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	const search_word = $(".skill_input_box").val();
 	let search_user_id = ""
@@ -1760,7 +1800,7 @@ function search_note(e){
 			csrfmiddlewaretoken: '{{ csrf_token }}'
 			},
 		success: function (result) {
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
+			window.history.pushState("", "", '/wm/myshortcut/')
 			$("#wm_list_area_for_popup").html("")
 			$("#wm_list_area_for_popup").append(result)
 		}
@@ -1800,7 +1840,7 @@ $('body').on('click', '.update_nick_button', function (e) {
 	}
 	console.log("user를 수정 합니다");
 
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	$.ajax({
 		type: "POST",
@@ -1887,7 +1927,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 	// alert("title : " + title);
 	// alert("content : " + content);
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.ajax({
 		type: "POST",
@@ -1899,7 +1939,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 		},
 		success: function (result) {
 			alert(result.message);
-			window.history.pushState("", "", '/skilnote1/myshortcut/')
+			window.history.pushState("", "", '/wm/myshortcut/')
 		}
 	});
 });
@@ -1909,7 +1949,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 		// alert("댓글 삭제 버튼 클릭");
 		const comment_id = this.id;
 
-		window.history.pushState("", "", '/skilnote1/')
+		window.history.pushState("", "", '/wm/')
 
 		$.ajax({
 			type: "POST",
@@ -1920,7 +1960,7 @@ $('body').on('click', '.comment_update_button', function (e) {
 			success: function (result) {
 				alert(result.message);
 				$("#comment_table_" + comment_id).remove()
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				const comment_count = parseInt($("#comment_count_area").text().trim()) - 1
 
@@ -1942,7 +1982,7 @@ $('body').on('click', '.shortcut_comment_button', function (e) {
 		return;
 	};
 
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 	if (option == "y") {
 		$.ajax({
 			type: "POST",
@@ -1954,7 +1994,7 @@ $('body').on('click', '.shortcut_comment_button', function (e) {
 			success: function (result) {
 				alert(result.message);
 
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -2004,7 +2044,7 @@ $(".go_end_line_btn").click(function () {
 })
 
 $(".new4_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("textbox 5개를 만드시겠습니까? (x,y)", "");
 
 	if (!title) {
@@ -2021,7 +2061,7 @@ $(".new4_btn").click(function () {
 			success: function (result) {
 				$('#empty_state').remove()
 				alert(result.message);
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 				location.reload(true);
 			}
 		});
@@ -2033,7 +2073,7 @@ $(".new4_btn").click(function () {
 
 
 $(".new1_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 
 	if (!title) {
@@ -2052,7 +2092,7 @@ $(".new1_btn").click(function () {
 				$('#empty_state').remove()
 				console.log("result : ", result);
 				alert("insert success")
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
+				window.history.pushState("", "", '/wm/myshortcut/')
 
 				var table_row = $('.table_row').length;
 
@@ -2077,7 +2117,7 @@ $(".new1_btn").click(function () {
 })
 
 $(".new2_btn").click(function () {
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 	const title = prompt("title을 입력해 주세요 ", "");
 	const filename = prompt("file 이름을 입력해 주세요");
 
@@ -2169,7 +2209,7 @@ $("#modify_category_button").click(function (e) {
 			alert("txt : " + category + "로 " + shortcut_arr + "를 이동")
 		}
 
-		window.history.pushState("", "", '/skilnote1/myshortcut/')
+		window.history.pushState("", "", '/wm/myshortcut/')
 
 		$.ajax({
 			type: "POST",
@@ -2201,7 +2241,7 @@ $('#shortcut_delete_button').click(function (e) {
 			shortcut_arr.push(id);
 		}
 	});
-	window.history.pushState("", "", '/skilnote1/myshortcut/')
+	window.history.pushState("", "", '/wm/myshortcut/')
 
 	option = prompt("삭제 하실래요(x,y)?", "");
 
@@ -2252,14 +2292,14 @@ $(".go_btn").click(function () {
 
 $(".favorite_user_list_btn").click(function () {
 	const url = "favorite_user_list/byajax"
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.get(url)
 		.done((result) => {
 			$("#user_table_area").html(result)
 			$("#user_list_modal").modal();
 
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 			// // $(".navbar").hide();
 
 		})
@@ -2273,13 +2313,13 @@ $(".favorite_user_list_btn").click(function () {
 
 $(".user_list_btn").click(function () {
 	const url = "userlist/byajax"
-	window.history.pushState("", "", '/skilnote1/')
+	window.history.pushState("", "", '/wm/')
 
 	$.get(url)
 		.done((result) => {
 			$("#user_table_area").html(result)
 			$("#user_list_modal").modal();
-			window.history.pushState("", "", '/skilnote1/myshortcut')
+			window.history.pushState("", "", '/wm/myshortcut')
 		})
 		.fail(() => {
 			console.log("fail");
@@ -2291,7 +2331,7 @@ $(".user_list_btn").click(function () {
 
 $('.category_name_list_button').click(function (e) {
 	const user_name = $("#shortcut_user_id").val();
-	const url = '/skilnote1/myshorcut/nicklist/' + user_name
+	const url = '/wm/myshorcut/nicklist/' + user_name
 	const ch = $("#current_category").text()
 
 	$.get(url)
@@ -2317,7 +2357,7 @@ $('.update_shortcut_user_id').click(function (e) {
 	const user_id = $("#shortcut_user_id").val()
 
 	if(user_id == "{{request.user}}"){
-		window.history.pushState("", "", '/skilnote1/')
+		window.history.pushState("", "", '/wm/')
 
 		$.ajax({
 			type: "POST",
@@ -2332,14 +2372,14 @@ $('.update_shortcut_user_id').click(function (e) {
 				if (original_id != "") {
 					$("#shortcut_user_id").val(original_id)
 				}
-				window.history.pushState("", "", '/skilnote1/myshortcut/')
-				location.href = "/skilnote1/myshortcut/"
+				window.history.pushState("", "", '/wm/myshortcut/')
+				location.href = "/wm/myshortcut/"
 			}
 		});
 	}else{
 		alert(user_id+" 님의 페이지 열기")
 		window.open(
-	  		`http://terecal-hyun.co.kr/skilnote1/myshortcut/${user_id}/1`,
+	  		`http://terecal-hyun.co.kr/wm/myshortcut/${user_id}/1`,
 	  		'_blank' // <- This is what makes it open in a new window.
 	);
 	}
@@ -2357,7 +2397,7 @@ $('body').on('click', '.shortcut_edit_button2', function (e) {
 
 		$.ajax({
 			type: "POST",
-			url: '/skilnote1/myshortcut/update_shortcut2_ajax/' + id,
+			url: '/wm/myshortcut/update_shortcut2_ajax/' + id,
 			data: {
 				id: id,
 				content2: content2,
@@ -2416,7 +2456,7 @@ $('body').on('click', '.short_update_button', function (e) {
 
 	$.ajax({
 		type: "POST",
-		url: '/skilnote1/myshortcut/update_shortcut_ajax/' + id,
+		url: '/wm/myshortcut/update_shortcut_ajax/' + id,
 		data: {
 			title: title,
 			csrfmiddlewaretoken: '{{ csrf_token }}'
