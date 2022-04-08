@@ -173,6 +173,8 @@ INTERNAL_IPS = [
     # ...
 ]
 
+DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
+
 LOGIN_REDIRECT_URL = '/wm/main_page'
 
 X_FRAME_OPTIONS = 'ALLOWALL'

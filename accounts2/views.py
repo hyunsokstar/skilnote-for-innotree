@@ -204,9 +204,13 @@ def update_for_profile(request, id):
         profile_last_category = request.POST.get('last_category', '')
         profile_public = request.POST.get('profile_public', '')
         
-        
         profile_common_subject_id = request.POST.get('profile_common_subject', '')
-        selected_common_subject = CommonSubject.objects.get(id=profile_common_subject_id)
+        
+        
+        if(profile_common_subject_id !=""):
+            selected_common_subject = CommonSubject.objects.get(id=profile_common_subject_id)
+        else: 
+            selected_common_subject = ""
         
         print("profile_public : ", profile_public)
         print("profile_user : ", profile_user)
