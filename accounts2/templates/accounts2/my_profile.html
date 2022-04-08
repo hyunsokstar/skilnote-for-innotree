@@ -139,19 +139,15 @@
 					<option value="{{cs.id}}" {% if request.user.profile.common_subject.subject == cs.subject %} selected {% endif %}>{{cs.subject}}</option>
 				{% endfor %}
 			</select>
-			
 
 		</td>
 	</tr>
-
 	<tr>
 		<td>reputation</td>
 		<td colspan="3"> {{ request.user.recommandationuseraboutskillnote_set.count }} 점</td>
 	</tr>
 
-
 </table>
-
 
 
 <button type="button" class="btn btn-outline-dark btn-block" id="update_complete_button_for_profile"
@@ -164,12 +160,7 @@
 </button>
 
 
-
-
-
 {% endblock %}
-
-
 
 {% block sidearea %}
 
@@ -209,29 +200,18 @@
 	{% for my_favorite_user in my_favorite_user_list %}
 
 	<tr id="myFavorite_{{my_favorite_user.id}}">
-
 		<td>
-
 			<a href="/accounts/user_profile_information_view/{{my_favorite_user.username}}">
-
 				{{ my_favorite_user.username }}
-
 			</a>
-
 			<a>
-
 				<img class="delete_for_my_favorite_user float-right" src="{% static 'icon/x_mark.png' %}"
 					data-target_user="{{my_favorite_user}}" data-row_id="{{my_favorite_user.id}}">
-
 			</a>
-
 		</td>
-
 	</tr>
 
 	{% endfor %}
-
-
 
 
 
@@ -246,8 +226,6 @@
 
 
 <script type="text/javascript">
-
-
 
 	// js area
 
@@ -386,67 +364,36 @@
 
 
 	$('body').on('click', '#delete_login_user_btn', function (e) {
-
 		e.preventDefault();
-
 		var userId = $(this).data("id");
-
-
-
 		var delete_id = prompt("본인 id를 입력하세요", "");
-
 		var option = prompt("진짜 탈퇴하실건가요? (yes or no)", "");
-
 		var userId = "{{request.user.username}}"
 
-
-
 		if (delete_id == userId & option == "yes") {
-
 			$.ajax({
-
 				type: "POST",
-
 				url: '/accounts/delete_login_user/',
-
 				data: {
-
 					csrfmiddlewaretoken: '{{ csrf_token }}',
-
 					userId: userId
-
 				},
-
 				success: function (result) {
-
 					alert(result.message);
-
 					window.location.href = "/accounts/login/"
-
 					// http://localhost:80/accounts/login/
-
 				}
-
 			});
-
 		} else {
-
 			alert("탈퇴를 취소합니다. 입력한 id가 부정확할수 있습니다.")
-
 		}
-
 	});
 
 
 
 	$('body').on('click', '#update_complete_button_for_profile', function (e) {
-
 		e.preventDefault();
-
 		// alert("update button click")
-
-
-
 		var profile_id = $(this).data("id");
 		var profile_user = $("#profile_user").val();
 		var profile_email = $("#profile_email").val();
@@ -488,31 +435,12 @@
 				csrfmiddlewaretoken: '{{ csrf_token }}'
 
 			},
-
 			success: function (result) {
-
 				alert(result.message)
-
 			}
-
 		});
-
 	});
 
-
-
 	{% endblock %}
-
-
-
-
-
-
-
-
-
-
-
-
 
 </script>
