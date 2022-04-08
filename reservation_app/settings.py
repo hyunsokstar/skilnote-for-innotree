@@ -11,7 +11,8 @@ SECRET_KEY = 'qki)d54cmpt_v7b5m07qh$d#o3j6#pm3gi=po&)b2a59$e859x'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 # ALLOWED_HOSTS = []
-ALLOWED_HOSTS = ['127.0.0.1','158.247.211.59', 'www.skilnote-for-innotreee.co.kr', 'skilnote-for-innotreee.co.kr']
+ALLOWED_HOSTS = ['127.0.0.1','158.247.211.59', 'www.skilnote-for-innotree.co.kr', 'skilnote-for-innotree.co.kr']
+
 
 # Application definition
 INSTALLED_APPS = [
@@ -146,6 +147,7 @@ SITE_ID = 1
 TIME_ZONE = 'Asia/Seoul'
 
 STATIC_URL = '/static/'
+
 STATICFILES_DIRS = [
     os.path.join(BASE_DIR, 'reservation_app', 'static')
 ]
