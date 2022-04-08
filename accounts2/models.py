@@ -18,7 +18,7 @@ class Profile(models.Model):
     last_updated_category = models.CharField(default="1", max_length=10)
     phone = models.CharField(max_length=20 , blank=True , null=True)
     reputation = models.IntegerField(default=0)
-    email = models.CharField(max_length=20, blank=True)
+    email = models.CharField(max_length=20, blank=True, null=True)
     # 2244
     public = models.BooleanField(default=True)
     
@@ -27,11 +27,12 @@ class Profile(models.Model):
     github2 = models.CharField(max_length=20, default="www.github.com" , blank=True , null=True)
     github3 = models.CharField(max_length=20, default="www.github.com" , blank=True , null=True)
     github4 = models.CharField(max_length=20, default="www.github.com" , null=True)
+    github5 = models.CharField(max_length=20, default="www.github.com" , null=True)
     lecture_url = models.CharField(max_length=40, blank=True)
     skill_note_reputation = models.IntegerField(default=0)  # skill note 유저 리스트 점수 추가할때 계산됨
-    completecount = models.IntegerField(default=0)
+    completecount = models.IntegerField(default=0 , blank=True , null=True)
     uncompletecount = models.IntegerField(default=0)
-    click_count = models.IntegerField(default=0)
+    click_count = models.IntegerField(default=0, blank=True , null=True)
     first_category = models.CharField(max_length=5, default="ca1")
     last_category = models.CharField(max_length=5, default="ca1")
     common_subject = models.ForeignKey(CommonSubject, on_delete=models.CASCADE, blank=True, null=True)
