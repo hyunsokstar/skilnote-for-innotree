@@ -35,7 +35,7 @@ class Profile(models.Model):
     click_count = models.IntegerField(default=0, blank=True , null=True)
     first_category = models.CharField(max_length=5, default="ca1")
     last_category = models.CharField(max_length=5, default="ca1")
-    common_subject = models.ForeignKey(CommonSubject, on_delete=models.CASCADE, blank=True, null=True)
+    common_subject = models.ForeignKey(CommonSubject, on_delete=models.SET_NULL, blank=True, null=True)
 
 
 class HistoryForUpdate(models.Model):

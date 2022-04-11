@@ -290,7 +290,7 @@ class my_profile_information_view(LoginRequiredMixin, ListView):
 
         common_subject_obj = CommonSubject.objects.all()
         print("common_subject_obj : ", common_subject_obj)
-        print("common_subject : ", self.request.user.profile.common_subject)
+        # print("common_subject : ", self.request.user.profile.common_subject)
 
         context['my_favorite_user_list'] = my_favorite_user_list
         context['common_subject_obj'] = common_subject_obj

@@ -135,6 +135,7 @@
 			<!-- {{request.user.profile.common_subject}}  -->
 
 			<select class="common_subject">
+				<option value="none">=== 선택 ===</option>
 				{% for cs in common_subject_obj %}
 					<option value="{{cs.id}}" {% if request.user.profile.common_subject.subject == cs.subject %} selected {% endif %}>{{cs.subject}}</option>
 				{% endfor %}
@@ -148,7 +149,6 @@
 	</tr>
 
 </table>
-
 
 <button type="button" class="btn btn-outline-dark btn-block" id="update_complete_button_for_profile"
 	data-id="{{request.user.profile.id}}">Profile Update
