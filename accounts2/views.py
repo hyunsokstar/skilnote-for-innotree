@@ -207,10 +207,10 @@ def update_for_profile(request, id):
         profile_common_subject_id = request.POST.get('profile_common_subject', '')
         
         
-        if(profile_common_subject_id !=""):
+        if(profile_common_subject_id != "none"):
             selected_common_subject = CommonSubject.objects.get(id=profile_common_subject_id)
         else: 
-            selected_common_subject = ""
+            selected_common_subject = None
         
         print("profile_public : ", profile_public)
         print("profile_user : ", profile_user)
