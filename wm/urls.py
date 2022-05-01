@@ -7,8 +7,13 @@ app_name = 'wm'
 
 urlpatterns = [
     # 1122
+     # total move for page
+     path('myshortcut/category_plus_a_for_current_user',
+         views.category_plus_a_for_current_user, name='category_plus_a_for_current_user'), 
+    path('myshortcut/category_minus_a_for_current_user',
+         views.category_minuus_a_for_current_user, name='category_minuus_a_for_current_user'),
+
     # partial_move_for_my_note
-    
     path('myshortcut/partial_copy_for_skilnote', views.partial_copy_for_skilnote, name="partial_copy_for_skilnote"),
     path('myshortcut/partial_copy_for_skilnote_from_another_user', views.partial_copy_for_skilnote_from_another_user, name="partial_copy_for_skilnote_from_another_user"),    
     path('myshortcut/partial_move_for_my_note', views.partial_move_for_my_note, name="partial_move_for_my_note"),
@@ -262,7 +267,7 @@ urlpatterns = [
          views.update_category_by_ajax, name='update_category_by_ajax'),
 
     # 비로그인 유저 리스트에 입력폼 추가 하기
-    # D:\new-skilnote\skilnote-for-innotree\wm\urls.py
+    # D:\new-skilnote\skilnote-for-jpa\wm\urls.py
     path('myshortcut/<str:user>/<int:category_id>',
          views.MyShortcutListByUser.as_view(), name="skil_note_list_by_user"),
 
